@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<!-- Cloudflare Pages static site: save this file as index.html at the publish root. -->
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Life Tabernacle Church Project Yearly Pledges</title>
+<style>
+:root{--bg:#f6ede0;--card:#fffaf2;--ink:#3b2a1e;--mut:#7a6552;--pri:#a4521f;--pri2:#c8801f;--acc:#5f6f3a;--bd:#e2d0b8;--bad:#a63a2b;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#241a13;--card:#33261c;--ink:#f3e6d3;--mut:#bfa88d;--pri:#e0894a;--pri2:#e3a64a;--acc:#9bb065;--bd:#4b392b;--bad:#e5806f;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#241a13;--card:#33261c;--ink:#f3e6d3;--mut:#bfa88d;--pri:#e0894a;--pri2:#e3a64a;--acc:#9bb065;--bd:#4b392b;--bad:#e5806f;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Georgia,'Times New Roman',serif}
+button,input,select{font:inherit}
+header{background:linear-gradient(135deg,#7a3b16,#b86a22);color:#fff;padding:14px 16px}
+header h1{margin:0;font-size:1.15rem}nav{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+nav button{background:#ffffff26;color:#fff;border:0;padding:7px 16px;border-radius:20px;cursor:pointer}
+nav button.on{background:#fff;color:#7a3b16}
+main{max-width:1000px;margin:auto;padding:16px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.stat{border-radius:14px;padding:16px;color:#fff}.stat b{display:block;font-size:1.5rem;margin-top:4px}.stat small{opacity:.9}
+.s1{background:linear-gradient(135deg,#a4521f,#c8801f)}.s2{background:linear-gradient(135deg,#5f6f3a,#869a52)}.s3{background:linear-gradient(135deg,#7a3b16,#a8553a)}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px;margin-top:14px}
+.btn{background:var(--pri);color:#fff;border:0;padding:9px 16px;border-radius:10px;cursor:pointer}
+.btn.alt{background:var(--acc)}.btn.ghost{background:transparent;color:var(--pri);border:1px solid var(--pri)}.btn.red{background:var(--bad)}.btn.sm{padding:4px 10px;font-size:.85rem}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:14px}.sp{flex:1}
+input,select{padding:9px;border-radius:8px;border:1px solid var(--bd);background:var(--card);color:var(--ink);width:100%}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;margin-top:10px}
+.list{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.m{background:var(--card);border:1px solid var(--bd);border-left:5px solid var(--pri2);border-radius:10px;padding:10px;cursor:pointer}
+.m:hover{border-left-color:var(--acc)}.m b{display:block}.m span{color:var(--mut);font-size:.9rem}
+.grid .m span{display:block;margin-top:2px}.list .m{display:flex;flex-wrap:wrap;gap:2px 18px;align-items:center}.list .m b{flex:1 1 150px}.list .m .bar{flex-basis:100%}.pc{color:var(--acc)!important;font-weight:bold}
+.bar{height:10px;background:var(--bd);border-radius:6px;overflow:hidden;margin:6px 0}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--pri2),var(--acc))}
+.ov{position:fixed;inset:0;background:#0008;display:flex;align-items:center;justify-content:center;padding:16px;z-index:50}
+.md{background:var(--card);border-radius:14px;padding:18px;width:100%;max-width:440px;max-height:90vh;overflow:auto}
+.md h3{margin-top:0}.md label{display:block;margin:10px 0 3px;font-size:.9rem;color:var(--mut)}
+.tw{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:.92rem}th,td{padding:7px;border-bottom:1px solid var(--bd);text-align:left;white-space:nowrap}th{color:var(--pri)}
+.tag{padding:2px 8px;border-radius:10px;font-size:.8rem;background:var(--pri2);color:#fff}.tag.ok{background:var(--acc)}
+.tabs{display:flex;gap:6px;margin-top:14px;flex-wrap:wrap}h2{margin:18px 0 0;color:var(--pri)}.mut{color:var(--mut)}
+</style></head><body>
+<header><h1>⛪ Life Tabernacle Church Project Yearly Pledges</h1>
+<nav id="nav"><button data-p="home">Home</button><button data-p="members">Members</button><button data-p="redemptions">Redemptions</button><button data-p="admin">Admin</button></nav></header>
+<main id="app"></main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+// ===== SUPABASE CONFIG (Project Settings > API) =====
+const SUPA_URL="https://kpcizjjhwspvbxqvnhpw.supabase.co";            // e.g. https://https://kpcizjjhwspvbxqvnhpw.supabase.co
+const SUPA_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtwY2l6ampod3NwdmJ4cXZuaHB3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMxMTYyMjgsImV4cCI6MjEwODY5MjIyOH0.tW63OWm0UUZWfh3Qr-e4MwlbjEtI3ogwOqjUGhgkAtQ";            // anon public key
+const ADMIN_EMAIL="rkihiko@hotmail.com";         // the admin user you create in Supabase Auth
+const SEED=''; // Do not embed member records in public source code.
+let S;try{S=JSON.parse(localStorage.getItem('lt_data')||'null')}catch(e){}
+if(!S){S={n:0,members:[],reds:[]}}
+const save=()=>{try{localStorage.setItem('lt_data',JSON.stringify(S))}catch(e){}};
+const sb=(SUPA_URL&&SUPA_KEY&&window.supabase)?supabase.createClient(SUPA_URL,SUPA_KEY):null;
+if(sb)S={n:0,members:[],reds:[]};
+const fail=e=>{if(e){console.error(e);alert('Database error: '+(e.message||e));return true}};
+const DB={
+ async load(){if(!sb)return render();
+  const[a,b]=await Promise.all([sb.from('members').select('id,name,pledge').order('id'),sb.from('redemptions').select('id,member_id,amount,redeemed_on,verified').order('id')]);
+  if(fail(a.error)||fail(b.error))return;
+  S.members=a.data.map(m=>({id:String(m.id),name:m.name,pledge:+m.pledge}));
+  S.reds=b.data.map(r=>({id:String(r.id),mid:String(r.member_id),amt:+r.amount,date:r.redeemed_on,ok:r.verified}));render()},
+ async addM(n,p){if(!sb){S.members.push({id:'m'+(S.n++),name:n,pledge:p});save();return render()}fail((await sb.from('members').insert({name:n,pledge:p})).error);await this.load()},
+ async updM(id,n,p){if(!sb){const m=mem(id);m.name=n;m.pledge=p;save();return render()}fail((await sb.from('members').update({name:n,pledge:p}).eq('id',id)).error);await this.load()},
+ async delM(id){if(!sb){S.members=S.members.filter(m=>m.id!==id);S.reds=S.reds.filter(r=>r.mid!==id);save();return render()}fail((await sb.from('members').delete().eq('id',id)).error);await this.load()},
+ async addRed(mid,a,d){if(!sb){S.reds.push({id:'r'+(S.n++),mid,amt:a,date:d,ok:false});save();return render()}fail((await sb.from('redemptions').insert({member_id:mid,amount:a,redeemed_on:d,verified:false})).error);await this.load()},
+ async updR(id,o){if(!sb){Object.assign(S.reds.find(r=>r.id===id),o);save();return render()}const u={};if('amt'in o)u.amount=o.amt;if('date'in o)u.redeemed_on=o.date;if('ok'in o)u.verified=o.ok;fail((await sb.from('redemptions').update(u).eq('id',id)).error);await this.load()},
+ async delR(id){if(!sb){S.reds=S.reds.filter(r=>r.id!==id);save();return render()}fail((await sb.from('redemptions').delete().eq('id',id)).error);await this.load()},
+ async login(u,p){if(!sb){alert('Supabase is not configured. Check the project URL and publishable key.');return false;}if(u.trim().toLowerCase()!==ADMIN_EMAIL.toLowerCase() && u.trim()!=='Benard')return false;const{error}=await sb.auth.signInWithPassword({email:ADMIN_EMAIL,password:p});return!error},
+ async out(){if(sb)await sb.auth.signOut();admin=false;await this.load()},
+ async init(){if(sb){const{data}=await sb.auth.getSession();admin=!!data.session}await this.load();setInterval(()=>{if(!document.querySelector('.ov')&&!/INPUT|SELECT/.test((document.activeElement||{}).tagName||''))this.load()},15000)}};
+let page='home',view='grid',admin=false,q='',aq='',rqv='',tab='members',redFilter='pending';
+const $=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const ksh=n=>'KSh '+Math.round(n).toLocaleString('en-KE');
+const red=id=>S.reds.filter(r=>r.mid===id&&r.ok).reduce((a,r)=>a+r.amt,0);
+const tp=()=>S.members.reduce((a,m)=>a+m.pledge,0),tr=()=>S.reds.filter(r=>r.ok).reduce((a,r)=>a+r.amt,0);
+const pct=m=>m.pledge?Math.min(100,red(m.id)/m.pledge*100):0;
+const mem=id=>S.members.find(m=>m.id===id);
+const today=()=>new Date().toISOString().slice(0,10);
+const match=(m,t)=>m.name.toLowerCase().includes(t.toLowerCase());
+
+function modal(html){const o=document.createElement('div');o.className='ov';o.innerHTML='<div class="md">'+html+'</div>';o.onclick=e=>{if(e.target===o)o.remove()};document.body.appendChild(o);return o}
+const closeM=()=>document.querySelectorAll('.ov').forEach(o=>o.remove());
+
+function detail(id){const m=mem(id),r=red(id);
+ modal(`<h3>${esc(m.name)}</h3><p>Total pledge: <b>${ksh(m.pledge)}</b><br>Redeemed (verified): <b>${ksh(r)}</b><br>Balance: <b>${ksh(Math.max(0,m.pledge-r))}</b></p>
+ <div class="bar"><i style="width:${pct(m)}%"></i></div><p class="mut">Progress: ${pct(m).toFixed(1)}%</p><button class="btn ghost" onclick="closeM()">Close</button>`)}
+
+function redeem(){const o=modal(`<h3>Redeem Pledge</h3><label>Search your name</label><input id="rs" placeholder="Type name…" autocomplete="off">
+ <div id="rl" class="list" style="max-height:150px;overflow:auto"></div><input type="hidden" id="rid">
+ <label>Amount (KSh)</label><input id="ra" type="number" min="1"><label>Date</label><input id="rd" type="date" value="${today()}">
+ <div class="row"><button class="btn" id="rsub">Submit</button><button class="btn ghost" onclick="closeM()">Cancel</button></div><p class="mut">Your payment shows after an admin verifies it.</p>`);
+ const L=o.querySelector('#rl'),draw=()=>{const t=o.querySelector('#rs').value;L.innerHTML=t?S.members.filter(m=>match(m,t)).slice(0,6).map(m=>`<div class="m" data-i="${m.id}"><b>${esc(m.name)}</b></div>`).join(''):''};
+ o.querySelector('#rs').oninput=draw;
+ L.onclick=e=>{const d=e.target.closest('.m');if(d){o.querySelector('#rid').value=d.dataset.i;o.querySelector('#rs').value=mem(d.dataset.i).name;L.innerHTML=''}};
+ o.querySelector('#rsub').onclick=async()=>{const id=o.querySelector('#rid').value,a=+o.querySelector('#ra').value,d=o.querySelector('#rd').value;
+  if(!id||!(a>0)||!d)return alert('Choose your name, then enter amount and date.');
+  await DB.addRed(id,a,d);closeM();alert('Submitted. Awaiting admin verification.')}}
+
+function copyBal(){const t=S.members.map(m=>`${m.name}: ${ksh(Math.max(0,m.pledge-red(m.id)))}`).join('\n');
+ (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>alert('Balances copied.')).catch(()=>{const o=modal('<h3>Balances</h3><textarea style="width:100%;height:200px"></textarea>');o.querySelector('textarea').value=t})}
+function completed(){const c=S.members.filter(m=>m.pledge>0&&red(m.id)>=m.pledge);
+ modal(`<h3>Balances Completed</h3>${c.length?c.map(m=>`<p>✅ ${esc(m.name)} — ${ksh(m.pledge)}</p>`).join(''):'<p class="mut">No member has completed their pledge yet.</p>'}<button class="btn ghost" onclick="closeM()">Close</button>`)}
+
+function memberCards(list,rich){return `<div class="${view==='grid'?'grid':'list'}">`+list.map(m=>`<div class="m" data-i="${m.id}"><b>${esc(m.name)}</b><span>Pledge: ${ksh(m.pledge)}</span><span>Balance: ${ksh(Math.max(0,m.pledge-red(m.id)))}</span><span class="pc">${pct(m).toFixed(0)}% reached</span><div class="bar"><i style="width:${pct(m)}%"></i></div></div>`).join('')+'</div>'}
+
+function home(){return `<div class="stats"><div class="stat s1"><small>Total Pledges</small><b>${ksh(tp())}</b></div>
+ <div class="stat s2"><small>Total Redeemed Pledges · Verified only</small><b>${ksh(tr())}</b></div>
+ <div class="stat s3"><small>Total Balance · Outstanding</small><b>${ksh(tp()-tr())}</b></div></div>
+ <div class="row"><button class="btn" onclick="redeem()">Redeem Pledge</button><button class="btn alt" onclick="copyBal()">Copy All Balances</button><button class="btn ghost" onclick="completed()">Balances Completed</button></div>
+ <h2>Members</h2><p class="mut">Tap any member to see their total pledge, balance, and progress.</p>
+ <div class="row" style="margin-top:0"><button class="btn sm ${view==='grid'?'':'ghost'}" onclick="view='grid';render()">Grid</button><button class="btn sm ${view==='list'?'':'ghost'}" onclick="view='list';render()">List</button></div>
+ <div id="mc">${memberCards(S.members,false)}</div>`}
+
+function members(){return `<h2>All Members</h2><div class="row" style="margin-top:8px"><input id="ms" placeholder="Search member…" value="${esc(q)}" style="max-width:320px"><button class="btn sm" id="memberSearchBtn">Search</button><button class="btn sm ghost" id="memberClearBtn">Clear</button><button class="btn sm ${view==='grid'?'':'ghost'}" onclick="view='grid';render()">Grid</button><button class="btn sm ${view==='list'?'':'ghost'}" onclick="view='list';render()">List</button></div>
+ <div id="mc">${memberCards(S.members.filter(m=>match(m,q)),true)}</div>`}
+
+function login(){return `<div class="card" style="max-width:340px;margin:30px auto"><h3>Admin Login</h3><label>Admin email or username</label><input id="u" autocomplete="username" placeholder="rkihiko@hotmail.com"><label>Password</label><input id="p" type="password" autocomplete="current-password"><div class="row"><button class="btn" id="li">Sign in</button></div></div>`}
+
+function pdf(title,head,rows,foot){const J=window.jspdf;if(!J)return alert('PDF library failed to load. Check your connection.');
+ const d=new J.jsPDF();d.setFontSize(14);d.text('Life Tabernacle — '+title,14,16);d.setFontSize(9);d.text('Generated '+today(),14,22);
+ d.autoTable({startY:27,head:[head],body:rows,foot:foot?[foot]:undefined,headStyles:{fillColor:[164,82,31]},footStyles:{fillColor:[95,111,58]}});d.save(title.replace(/\s+/g,'-').toLowerCase()+'.pdf')}
+const pn=s=>s.replace('KSh ','KSh ');
+const exRed=()=>pdf('Verified Redeemed Pledges',['#','Member','Date','Amount'],S.reds.filter(r=>r.ok).map((r,i)=>[i+1,mem(r.mid)?.name||'?',r.date,ksh(r.amt)]),['','','Total',ksh(tr())]);
+const exBal=()=>pdf('Member Balances',['#','Member','Pledge','Redeemed','Balance'],S.members.map((m,i)=>[i+1,m.name,ksh(m.pledge),ksh(red(m.id)),ksh(Math.max(0,m.pledge-red(m.id)))]),['','Total',ksh(tp()),ksh(tr()),ksh(tp()-tr())]);
+const exPl=()=>pdf('All Pledges',['#','Member','Pledge'],S.members.map((m,i)=>[i+1,m.name,ksh(m.pledge)]),['','Total',ksh(tp())]);
+
+function adminPage(){
+ const mr=S.members.filter(m=>match(m,aq)).map(m=>`<tr><td>${esc(m.name)}</td><td>${ksh(m.pledge)}</td><td>${ksh(red(m.id))}</td><td>${ksh(Math.max(0,m.pledge-red(m.id)))}</td><td>${pct(m).toFixed(1)}%</td><td><button class="btn sm" onclick="editM('${m.id}')">Edit</button> <button class="btn sm red" onclick="delM('${m.id}')">Delete</button></td></tr>`).join('');
+ const pendingCount=S.reds.filter(r=>!r.ok).length,verifiedCount=S.reds.filter(r=>r.ok).length;
+ const filteredR=[...S.reds].filter(r=>redFilter==='all'||(redFilter==='pending'?!r.ok:r.ok)).reverse();
+ const rr=filteredR.map(r=>`<tr><td>${esc(mem(r.mid)?.name||'?')}</td><td>${ksh(r.amt)}</td><td>${esc(r.date||'')}</td><td><span class="tag ${r.ok?'ok':''}">${r.ok?'Verified':'Pending'}</span></td><td>${r.ok?'':`<button class="btn sm alt" onclick="ver('${r.id}')">Verify</button> `}<button class="btn sm" onclick="editR('${r.id}')">Edit</button> <button class="btn sm red" onclick="delR('${r.id}')">Delete</button></td></tr>`).join('');
+ const redTitle=redFilter==='pending'?'Pending Redemptions':redFilter==='verified'?'Verified Redemptions':'All Redemptions';
+ return `<div class="stats"><div class="stat s1"><small>Total Pledges</small><b>${ksh(tp())}</b></div><div class="stat s2"><small>Total Redeemed (verified)</small><b>${ksh(tr())}</b></div><div class="stat s3"><small>Grand Total Balance Outstanding</small><b>${ksh(Math.max(0,tp()-tr()))}</b></div></div>
+ <div class="row"><button class="btn" onclick="exRed()">Export Redeemed PDF</button><button class="btn alt" onclick="exBal()">Export Balances PDF</button><button class="btn alt" onclick="exPl()">Export Pledges PDF</button><span class="sp"></span><button class="btn ghost" onclick="DB.out()">Log out</button></div>
+ <div class="tabs"><button class="btn sm ${tab==='members'?'':'ghost'}" onclick="tab='members';render()">Members</button><button class="btn sm ${tab==='reds'?'':'ghost'}" onclick="tab='reds';redFilter='pending';render()">Redemptions (${verifiedCount} verified · ${pendingCount} pending)</button></div>
+ ${tab==='members'?`<div class="card"><div class="row" style="margin-top:0"><input id="as" placeholder="Search members…" value="${esc(aq)}" style="max-width:300px"><button class="btn" onclick="addM()">+ Add member</button></div><div class="tw"><table><tr><th>Name</th><th>Pledge</th><th>Redeemed</th><th>Balance</th><th>% reached</th><th></th></tr>${mr||'<tr><td colspan="6" class="mut">No matching members.</td></tr>'}</table></div></div>`
+ :`<div class="card"><div class="row" style="margin-top:0;align-items:center">
+ <button class="btn sm ${redFilter==='pending'?'':'ghost'}" onclick="redFilter='pending';render()">Pending (${pendingCount})</button>
+ <button class="btn sm ${redFilter==='verified'?'':'ghost'}" onclick="redFilter='verified';render()">Verified (${verifiedCount})</button>
+ <button class="btn sm ${redFilter==='all'?'':'ghost'}" onclick="redFilter='all';render()">All (${S.reds.length})</button>
+ <span class="sp"></span><button class="btn sm ghost" onclick="DB.load()">Sync / Refresh from database</button></div>
+ <p><b>${redTitle}</b> <span class="mut">— ${filteredR.length} record(s)</span></p>
+ <div class="tw"><table><tr><th>Member</th><th>Amount</th><th>Date</th><th>Status</th><th>Actions</th></tr>${rr||`<tr><td colspan="5" class="mut">No ${redFilter==='all'?'':redFilter+' '}redemptions found. Use Sync / Refresh from database to check for new records.</td></tr>`}</table></div></div>`}`
+}
+function addM(){const o=modal(`<h3>Add member</h3><label>Name</label><input id="an"><label>Yearly pledge (KSh)</label><input id="ap" type="number" min="0" value="0"><div class="row"><button class="btn" id="ok">Save</button><button class="btn ghost" onclick="closeM()">Cancel</button></div>`);
+ o.querySelector('#ok').onclick=async()=>{const n=o.querySelector('#an').value.trim();if(!n)return;await DB.addM(n,+o.querySelector('#ap').value||0);closeM()}}
+function editM(id){const m=mem(id),o=modal(`<h3>Edit member</h3><label>Name</label><input id="an" value="${esc(m.name)}"><label>Yearly pledge (KSh)</label><input id="ap" type="number" value="${m.pledge}"><div class="row"><button class="btn" id="ok">Save</button><button class="btn ghost" onclick="closeM()">Cancel</button></div>`);
+ o.querySelector('#ok').onclick=async()=>{await DB.updM(id,o.querySelector('#an').value.trim()||m.name,+o.querySelector('#ap').value||0);closeM()}}
+function delM(id){if(confirm('Delete this member and their redemptions?'))DB.delM(id)}
+function ver(id){DB.updR(id,{ok:true})}
+function delR(id){if(confirm('Delete this redemption?'))DB.delR(id)}
+function editR(id){const r=S.reds.find(x=>x.id===id),o=modal(`<h3>Edit redemption</h3><label>Amount (KSh)</label><input id="ra" type="number" value="${r.amt}"><label>Date</label><input id="rd" type="date" value="${r.date}"><label>Status</label><select id="rv"><option value="0" ${r.ok?'':'selected'}>Pending</option><option value="1" ${r.ok?'selected':''}>Verified</option></select><div class="row"><button class="btn" id="ok">Save</button><button class="btn ghost" onclick="closeM()">Cancel</button></div>`);
+ o.querySelector('#ok').onclick=async()=>{await DB.updR(id,{amt:+o.querySelector('#ra').value||r.amt,date:o.querySelector('#rd').value||r.date,ok:o.querySelector('#rv').value==='1'});closeM()}}
+
+function redPage(){const t=rqv.toLowerCase(),L=S.reds.filter(r=>r.ok&&(!t||(mem(r.mid)?.name||'').toLowerCase().includes(t))).sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+ const rows=L.map(r=>`<tr><td>${esc(r.date)}</td><td>${esc(mem(r.mid)?.name||'?')}</td><td>${ksh(r.amt)}</td></tr>`).join('');
+ return `<h2>Redeemed Pledges</h2><div class="stats"><div class="stat s2"><small>Total Redeemed · Verified only</small><b>${ksh(tr())}</b></div><div class="stat s1"><small>Verified payments</small><b>${S.reds.filter(r=>r.ok).length}</b></div></div>
+ <div class="row"><input id="rq" placeholder="Search member…" value="${esc(rqv)}" style="max-width:300px"><button class="btn" onclick="redeem()">Redeem Pledge</button></div>
+ <div class="card"><div class="tw"><table><tr><th>Date</th><th>Member</th><th>Amount</th></tr>${rows||'<tr><td colspan=3 class="mut">No verified redemptions yet.</td></tr>'}</table></div></div>`}
+function render(){
+ document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.p===page));
+ const a=$('#app');a.innerHTML=page==='home'?home():page==='members'?members():page==='redemptions'?redPage():admin?adminPage():login();
+ a.querySelectorAll('.m[data-i]').forEach(e=>e.onclick=()=>detail(e.dataset.i));
+ const redrawMembers=(rich)=>{const box=$('#mc');if(box){box.innerHTML=memberCards(S.members.filter(m=>match(m,q)),rich);box.querySelectorAll('.m[data-i]').forEach(e=>e.onclick=()=>detail(e.dataset.i))}};
+ const hs=$('#homeSearch');if(hs){hs.oninput=()=>{q=hs.value;redrawMembers(false)};$('#homeSearchBtn').onclick=()=>{q=hs.value;redrawMembers(false)};$('#homeClearBtn').onclick=()=>{q='';render()};hs.onkeydown=e=>{if(e.key==='Enter'){q=hs.value;redrawMembers(false)}}}
+ const ms=$('#ms');if(ms){ms.oninput=()=>{q=ms.value;redrawMembers(true)};$('#memberSearchBtn').onclick=()=>{q=ms.value;redrawMembers(true)};$('#memberClearBtn').onclick=()=>{q='';render()};ms.onkeydown=e=>{if(e.key==='Enter'){q=ms.value;redrawMembers(true)}}}
+ const as=$('#as');if(as)as.oninput=()=>{aq=as.value;const p=as.selectionStart;render();const n=$('#as');n.focus();n.setSelectionRange(p,p)};
+ const rq=$('#rq');if(rq)rq.oninput=()=>{rqv=rq.value;const p=rq.selectionStart;render();const n=$('#rq');n.focus();n.setSelectionRange(p,p)};
+ const li=$('#li');if(li)li.onclick=async()=>{if(await DB.login($('#u').value,$('#p').value)){admin=true;await DB.load()}else alert('Wrong username or password.')}
+}
+document.querySelectorAll('#nav button').forEach(b=>b.onclick=()=>{page=b.dataset.p;render()});
+render();DB.init();
+</script></body></html>
