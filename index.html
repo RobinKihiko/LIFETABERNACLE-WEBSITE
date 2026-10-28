@@ -43,7 +43,7 @@ input,select{padding:9px;border-radius:8px;border:1px solid var(--bd);background
 .m{background:var(--card);border:1px solid var(--bd);border-left:5px solid var(--pri2);border-radius:10px;padding:10px;cursor:pointer;transition:border-color .2s,transform .2s}
 .m:hover{border-left-color:var(--red);transform:translateY(-2px)}
 .m b{display:block}.m span{color:var(--mut);font-size:.9rem}
-.grid .m span{display:block;margin-top:2px}.list .m{display:flex;flex-wrap:wrap;gap:2px 18px;align-items:center}.list .m b{flex:1 1 150px}.list .m .bar{flex-basis:100%}.pc{color:var(--ok)!important;font-weight:bold}.m .pl{color:var(--pri);font-weight:600}.m .bl{color:var(--red);font-weight:600}.m .bl.done{color:var(--ok)}.sortsel{max-width:230px;padding:5px 8px;font-size:.88rem}
+.grid .m span{display:block;margin-top:2px}.list .m{display:flex;flex-wrap:wrap;gap:2px 18px;align-items:center}.list .m b{flex:1 1 150px}.list .m .bar{flex-basis:100%}.pc{color:var(--ok)!important;font-weight:bold}.m .pl{color:var(--pri);font-weight:600}.m .bl{color:var(--red);font-weight:600}.m .rd{color:var(--ok);font-weight:600}.m .bl.done{color:var(--ok)}.sortsel{max-width:230px;padding:5px 8px;font-size:.88rem}
 .bar{height:10px;background:var(--bd);border-radius:6px;overflow:hidden;margin:6px 0}
 .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--pri2),var(--pri));transform-origin:left}
 .ov{position:fixed;inset:0;background:#0008;display:flex;align-items:center;justify-content:center;padding:16px;z-index:50;animation:fade .2s both}
@@ -171,7 +171,7 @@ const bal=m=>Math.max(0,m.pledge-red(m.id));
 const sorters={id:()=>0,'name':(a,b)=>a.name.localeCompare(b.name),'name-d':(a,b)=>b.name.localeCompare(a.name),'pledge-d':(a,b)=>b.pledge-a.pledge,'pledge-a':(a,b)=>a.pledge-b.pledge,'bal-d':(a,b)=>bal(b)-bal(a),'bal-a':(a,b)=>bal(a)-bal(b),'pct-d':(a,b)=>pct(b)-pct(a)};
 function sortSel(){const o=[['id','Sort: order added'],['name','Name A to Z'],['name-d','Name Z to A'],['pledge-d','Pledge: highest first'],['pledge-a','Pledge: lowest first'],['bal-d','Balance: highest first'],['bal-a','Balance: lowest first'],['pct-d','Progress: most paid first']];
  return `<select id="sortSel" class="sortsel" aria-label="Sort members">`+o.map(x=>`<option value="${x[0]}" ${sortBy===x[0]?'selected':''}>${x[1]}</option>`).join('')+`</select>`}
-function memberCards(list,rich){return `<div class="${view==='grid'?'grid':'list'}">`+[...list].sort(sorters[sortBy]||sorters.id).map(m=>`<div class="m" data-i="${m.id}"><b>${esc(m.name)}</b><span class="pl">Pledge: ${ksh(m.pledge)}</span><span class="bl ${bal(m)<=0&&m.pledge>0?'done':''}">Balance: ${ksh(bal(m))}</span><span class="pc">${pct(m).toFixed(0)}% reached</span><div class="bar"><i style="width:${pct(m)}%"></i></div></div>`).join('')+'</div>'}
+function memberCards(list,rich){return `<div class="${view==='grid'?'grid':'list'}">`+[...list].sort(sorters[sortBy]||sorters.id).map(m=>`<div class="m" data-i="${m.id}"><b>${esc(m.name)}</b><span class="pl">Pledge: ${ksh(m.pledge)}</span>${rich?`<span class="rd">Redeemed: ${ksh(red(m.id))}</span>`:''}<span class="bl ${bal(m)<=0&&m.pledge>0?'done':''}">Balance: ${ksh(bal(m))}</span><span class="pc">${pct(m).toFixed(0)}% reached</span><div class="bar"><i style="width:${pct(m)}%"></i></div></div>`).join('')+'</div>'}
 
 function home(){return `<div class="stats"><div class="stat s1"><small>Total Pledges</small><b>${ksh(tp())}</b></div>
  <div class="stat s2"><small>Total Redeemed Pledges · Verified only</small><b>${ksh(tr())}</b></div>
