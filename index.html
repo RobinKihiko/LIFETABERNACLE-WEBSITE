@@ -114,7 +114,7 @@ const DB={
  async addM(n,p){if(!sb){S.members.push({id:'m'+(S.n++),name:n,pledge:p});save();return render()}fail((await sb.from('members').insert({name:n,pledge:p})).error);await this.load()},
  async updM(id,n,p){if(!sb){const m=mem(id);m.name=n;m.pledge=p;save();return render()}fail((await sb.from('members').update({name:n,pledge:p}).eq('id',id)).error);await this.load()},
  async delM(id){if(!sb){S.members=S.members.filter(m=>m.id!==id);S.reds=S.reds.filter(r=>r.mid!==id);save();return render()}fail((await sb.from('members').delete().eq('id',id)).error);await this.load()},
- async addRed(mid,a,d){if(!sb){S.reds.push({id:'r'+(S.n++),mid,amt:a,date:d,ok:false});save();return render()}fail((await sb.from('redemptions').insert({member_id:mid,amount:a,redeemed_on:d,verified:false})).error);await this.load()},
+ async addRed(mid,a,d){if(!sb){S.reds.push({id:'r'+(S.n++),mid,amt:a,date:d,ok:false});save();render();return true}const bad=fail((await sb.from('redemptions').insert({member_id:mid,amount:a,redeemed_on:d,verified:false})).error);await this.load();return !bad},
  async updR(id,o){if(!sb){Object.assign(S.reds.find(r=>r.id===id),o);save();return render()}const u={};if('amt'in o)u.amount=o.amt;if('date'in o)u.redeemed_on=o.date;if('ok'in o)u.verified=o.ok;
   const{data,error}=await sb.from('redemptions').update(u).eq('id',id).select('id');
   if(fail(error))return;
@@ -160,8 +160,11 @@ function redeem(){const o=modal(`<h3>Redeem Pledge</h3><label>Search your name</
  L.onclick=e=>{const d=e.target.closest('.m');if(d){o.querySelector('#rid').value=d.dataset.i;o.querySelector('#rs').value=mem(d.dataset.i).name;L.innerHTML=''}};
  o.querySelector('#rsub').onclick=async()=>{const id=o.querySelector('#rid').value,a=+o.querySelector('#ra').value,d=o.querySelector('#rd').value;
   if(!id||!(a>0)||!d)return alert('Choose your name, then enter amount and date.');
-  await DB.addRed(id,a,d);closeM();toast('Submitted. Awaiting admin verification.')}}
+  const nm=mem(id).name,done=await DB.addRed(id,a,d);closeM();if(done)thanks(nm,a)}}
 
+function thanks(name,amt){modal(`<div style="text-align:center"><div style="font-size:2.4rem">🙏</div><h3 style="margin:6px 0">Thank you, ${esc(name)}!</h3>
+ <p>We have received your pledge payment of <b>${ksh(amt)}</b>.</p><p class="mut">It will show in your total once an admin verifies it. God bless you for your giving.</p>
+ <button class="btn" onclick="closeM()">Close</button></div>`)}
 function copyBal(){const t=S.members.map(m=>`${m.name}: ${ksh(Math.max(0,m.pledge-red(m.id)))}`).join('\n');
  (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast('Balances copied.')).catch(()=>{const o=modal('<h3>Balances</h3><textarea style="width:100%;height:200px"></textarea>');o.querySelector('textarea').value=t})}
 function completed(){const c=S.members.filter(m=>m.pledge>0&&red(m.id)>=m.pledge);
