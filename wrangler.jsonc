@@ -1,11 +1,10 @@
-
 {
   "$schema": "https://developers.cloudflare.com/workers/wrangler/config-schema.json",
   "name": "lifetabernacle-website",
   "main": "src/index.js",
   "compatibility_date": "2026-10-29",
   "assets": {
-    "directory": "./public",
+    "directory": ".",
     "binding": "ASSETS"
   }
 }
