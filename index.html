@@ -93,7 +93,7 @@ tr.pend td{background:#fdf1dc}
 // ===== SUPABASE CONFIG (Project Settings > API) =====
 const SUPA_URL="https://kpcizjjhwspvbxqvnhpw.supabase.co";
 const SUPA_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtwY2l6ampod3NwdmJ4cXZuaHB3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMxMTYyMjgsImV4cCI6MjEwODY5MjIyOH0.tW63OWm0UUZWfh3Qr-e4MwlbjEtI3ogwOqjUGhgkAtQ";
-const ADMIN_EMAIL="rkihiko@hotmail.com";         // the admin user you create in Supabase Auth
+const ADMIN_EMAILS=["rkihiko@hotmail.com","ihati.ib@gmail.com"];const ADMIN_EMAIL=ADMIN_EMAILS[0];         // the admin user you create in Supabase Auth
 const SEED=''; // Do not embed member records in public source code.
 let S;try{S=JSON.parse(localStorage.getItem('lt_data')||'null')}catch(e){}
 if(!S){S={n:0,members:[],reds:[]}}
@@ -125,7 +125,7 @@ const DB={
   const{data,error}=await sb.from('redemptions').update({verified:true}).in('id',ids).select('id');
   if(fail(error))return;toast((data||[]).length+' redemption(s) verified');await this.load()},
  async delR(id){if(!sb){S.reds=S.reds.filter(r=>r.id!==id);save();return render()}fail((await sb.from('redemptions').delete().eq('id',id)).error);await this.load()},
- async login(u,p){if(!sb){alert('Supabase is not configured. Check the project URL and publishable key.');return false;}if(u.trim().toLowerCase()!==ADMIN_EMAIL.toLowerCase() && u.trim()!=='Benard')return false;const{data,error}=await sb.auth.signInWithPassword({email:ADMIN_EMAIL,password:p});if(!error)adminEmail=(data.user&&data.user.email)||ADMIN_EMAIL;return!error},
+ async login(u,p){if(!sb){alert('Supabase is not configured. Check the project URL and publishable key.');return false;}const typed=u.trim().toLowerCase();const em=ADMIN_EMAILS.find(e=>e.toLowerCase()===typed)||(u.trim()==='Benard'?ADMIN_EMAIL:null);if(!em)return false;const{data,error}=await sb.auth.signInWithPassword({email:em,password:p});if(!error)adminEmail=(data.user&&data.user.email)||em;return!error},
  async out(){if(sb)await sb.auth.signOut();admin=false;await this.load()},
  async init(){if(sb){const{data}=await sb.auth.getSession();admin=!!data.session;adminEmail=(data.session&&data.session.user.email)||'';sb.auth.onAuthStateChange((ev,s)=>{if(ev==='SIGNED_OUT'||!s){admin=false;adminEmail='';render()}})}await this.load();
   if(sb){ // live sync: any change to redemptions (new pledge, verification) refreshes every open screen
@@ -187,7 +187,7 @@ function home(){return `<div class="stats"><div class="stat s1"><small>Total Ple
 function members(){return `<h2>All Members</h2><div class="row" style="margin-top:8px"><input id="ms" placeholder="Search member…" value="${esc(q)}" style="max-width:320px"><button class="btn sm" id="memberSearchBtn">Search</button><button class="btn sm ghost" id="memberClearBtn">Clear</button><button class="btn sm ${view==='grid'?'':'ghost'}" onclick="view='grid';render()">Grid</button><button class="btn sm ${view==='list'?'':'ghost'}" onclick="view='list';render()">List</button>${sortSel()}</div>
  <div id="mc">${memberCards(S.members.filter(m=>match(m,q)),true)}</div>`}
 
-function login(){return `<div class="card" style="max-width:340px;margin:30px auto"><h3>Admin Login</h3><label>Admin email or username</label><input id="u" autocomplete="username" placeholder="rkihiko@hotmail.com"><label>Password</label><input id="p" type="password" autocomplete="current-password"><div class="row"><button class="btn" id="li">Sign in</button></div></div>`}
+function login(){return `<div class="card" style="max-width:340px;margin:30px auto"><h3>Admin Login</h3><label>Admin email or username</label><input id="u" autocomplete="username" placeholder="Admin email"><label>Password</label><input id="p" type="password" autocomplete="current-password"><div class="row"><button class="btn" id="li">Sign in</button></div></div>`}
 
 function pdf(title,head,rows,foot){const J=window.jspdf;if(!J)return alert('PDF library failed to load. Check your connection.');
  const d=new J.jsPDF();d.setFontSize(14);d.text('Life Tabernacle — '+title,14,16);d.setFontSize(9);d.text('Generated '+today(),14,22);
